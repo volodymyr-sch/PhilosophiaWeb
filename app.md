@@ -10,7 +10,7 @@ Android package: `com.vlsch.serenity`
 - [Apple App Store listing](https://apps.apple.com/us/app/philosophy-daily-quotes/id6746213108)
 - [Apple iTunes Search API record](https://itunes.apple.com/lookup?id=6746213108&country=us)
 - [Google Play listing](https://play.google.com/store/apps/details?id=com.vlsch.serenity)
-- [Developer website](https://philosophia-org.github.io/)
+- [Developer website](https://philosophiaquotes.com/)
 - [Privacy policy](https://philosophia-org.github.io/privacy-policy/)
 - [Apple standard EULA](https://www.apple.com/legal/internet-services/itunes/dev/stdeula/)
 
@@ -246,7 +246,7 @@ The recommended promise is therefore not generic motivation. It is **a beautiful
 - `/faq.html` contains the eight search-led questions and links each answer to the corresponding guide.
 - Interior-page navigation, general guide calls to action, mobile download bars, and download footers present iOS and Android as peers. The iPhone widget guide keeps its article-level and sticky action iOS-only because it teaches an iOS-specific widget workflow; its global navigation and footer still offer both stores.
 - The no-scroll layout applies only to the homepage. Guides and FAQ remain conventional server-readable pages so long-form answers stay usable and indexable.
-- Essential homepage playback respects reduced-motion and data-saver preferences; a still poster remains available and the visitor can manually play or pause the preview.
+- Essential homepage playback respects reduced-motion and data-saver preferences; the matching dark or light still poster remains visible whenever autoplay is paused or unavailable.
 
 Avoid unsupported superlatives such as “the #1 philosophy app.” Avoid positioning the product as treatment for anxiety, depression, or other health conditions. Philosophy can be described as a reflection practice, not medical care.
 
@@ -256,11 +256,13 @@ Public research identifies plausible demand; it cannot prove keyword-level insta
 
 1. Verify the domain in Google Search Console and submit `/sitemap.xml`.
 2. Review impressions, average position, clicks, and click-through rate by guide and query after pages have been indexed.
-3. Compare homepage and guide CTA click events by the existing `data-location` attributes once a privacy-consistent analytics tool is selected.
+3. Compare homepage, guide, quote, philosopher, school, topic, and work CTA clicks using the GA4 `store_click` event and the existing `data-location` attributes. The production measurement ID is `G-JCXBSEW87K`; custom event parameters are `store_platform`, `cta_location`, and `page_type`.
 4. Add Apple campaign tokens and Google Play install-referrer parameters only after valid account identifiers are available.
 5. Compare store product-page views and downloads with website CTA activity in App Store Connect and Google Play Console.
 6. Refresh weak title/description pairs only after enough impressions exist; do not judge a new guide from a few days of data.
 7. Expand the content hub from real query data—such as specific philosophers or schools—rather than publishing many near-duplicate pages.
+
+GA4 is loaded only after analytics consent. Consent Mode v2 defaults analytics and all advertising storage to denied; granting analytics enables analytics storage while advertising storage, advertising user data, Google Signals, and ad-personalization signals remain disabled. Visitors can reopen the choice through the `Analytics settings` control beside the privacy-policy link.
 
 ## Recommended next ASO checks
 

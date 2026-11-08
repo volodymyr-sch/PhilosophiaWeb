@@ -22,10 +22,10 @@ from pathlib import Path
 PROJECT = Path(__file__).resolve().parent.parent
 DATA = PROJECT / "data"
 SITE = PROJECT / "website"
-CANONICAL = "https://philosophia-org.github.io"
+CANONICAL = "https://philosophiaquotes.com"
 APP_STORE = "https://apps.apple.com/us/app/philosophy-daily-quotes/id6746213108"
 PLAY_STORE = "https://play.google.com/store/apps/details?id=com.vlsch.serenity"
-CSS_VERSION = "20260723-11"
+CSS_VERSION = "20261104-7"
 
 INITIAL_AUTHORS = (
     "Marcus Aurelius",

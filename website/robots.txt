@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://philosophia-org.github.io/sitemap.xml
+Sitemap: https://philosophiaquotes.com/sitemap.xml
