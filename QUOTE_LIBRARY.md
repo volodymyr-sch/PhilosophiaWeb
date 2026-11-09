@@ -1,37 +1,48 @@
 # Philosophia quote publishing
 
-The static quote library is generated from the English backend snapshots in
-`data/`. The API key is not stored in this repository or in the generated site.
+The static quote library is generated from the JSON snapshots in `data/`.
+
+- `data/quotes-en.json`: the published quotes, copied from the app's audited
+  content (`local/raw-content` in the app repo). Never use the v1 back end.
+- `data/philosophers-en.json`, `data/philosophies-en.json`: biographies and
+  schools, a fixed v1 snapshot from July 2026.
+- `data/quote-publication.json`: the IDs of the published quotes.
 
 ## Initial publication
 
-Run:
-
-```sh
-python3 scripts/generate_quote_library.py --publish-due 2026-07-23
-python3 scripts/validate_site.py
-```
-
-The initial release contains 150 quote pages: ten named-source records for each
-of 15 philosophers. Selection is deterministic and considers source
+The initial release (2026-07-23) had 150 quote pages: ten named-source records
+for each of 15 philosophers. Selection was deterministic and considered source
 specificity, duplicate text, readable length, popularity, source diversity, and
 balanced philosopher coverage.
 
-## Local catalog and manual updates
+On 2026-11-08 the site was checked against the app's quote audit. 39 pages
+showed lines that the audit removed (fake, misattributed, templated, or
+duplicate). 25 more pages kept their line, but the audit left it with only an
+“Attributed…” source, so they had no named work. All 64 IDs were removed from
+`data/quote-publication.json` (86 pages stay), and `website/_redirects` sends
+each old URL to the best page with a 301. Then 12 new quotes were added with
+the same selection rules, so each philosopher has at least 6 pages (98 pages).
 
-The selected content is stored as JSON snapshots in `data/`; there is no local
-database and no scheduled publishing automation. `data/quotes-en.json` contains
-only the 150 records used by the website, rather than the complete backend
-catalog. The current website remains fixed at those 150 quote pages until a
-manual content update is requested.
+## Update the quotes
 
-Refresh the snapshots when backend content changes:
+Do this when the app's quote content changes:
+
+1. In the app repo, run `local/audit/scripts/content_build.py` if
+   `local/raw-content` changed.
+2. Run the import and the generator:
 
 ```sh
-PHILOSOPHIA_API_KEY="…" python3 scripts/fetch_quote_catalog.py
-python3 scripts/generate_quote_library.py
-python3 scripts/validate_site.py
+python3 scripts/import_app_quotes.py
+python3 scripts/generate_quote_library.py --publish-due 2026-07-23
 ```
+
+`--publish-due 2026-07-23` keeps the current set of pages. Without it, the
+generator tries to add monthly batches of 20 quotes and stops, because
+`data/quotes-en.json` holds only the published quotes.
+
+If the import stops with a list of IDs, the audit removed or merged those
+quotes. Remove the IDs from `data/quote-publication.json`. Add a 301 for each old
+page to `website/_redirects`. Then run the import again.
 
 ## Editorial policy
 
