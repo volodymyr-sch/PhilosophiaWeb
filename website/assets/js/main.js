@@ -297,15 +297,15 @@
     node.textContent = String(new Date().getFullYear());
   });
 
-  // ---- Atmosphere: painted dusk sky (Three.js) and smooth scroll (Lenis) ----
-  // The two heavy files load after the page is usable, from the same folder as this file.
-  // They are plain scripts, so this also works when the page is opened from disk (file://).
+  // ---- Smooth scroll (Lenis) ----
+  // It loads after the page is usable, from the same folder as this file.
+  // It is a plain script, so this also works when the page is opened from disk (file://).
   const isHome = document.body.classList.contains("landing-page");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  // Browsers often guess "3g" wrongly, so only data-saver and 2g skip the canvas.
+  // Browsers often guess "3g" wrongly, so only data-saver and 2g count as slow. home.js reads the class.
   const slowConnection = /(^|-)2g$/.test(navigator.connection?.effectiveType || "");
   const lightWeight = Boolean(navigator.connection?.saveData) || slowConnection;
-  document.documentElement.classList.toggle("light-weight", lightWeight); // home.js reads it too
+  document.documentElement.classList.toggle("light-weight", lightWeight);
   const assetBase = new URL("./", selfScript?.src || window.location.href);
   const assetQuery = selfScript ? new URL(selfScript.src).search : "";
   const loadScript = (name) =>
@@ -326,39 +326,6 @@
       .catch((error) => {
         console.warn("Smooth scroll not started; native scrolling stays.", error);
       });
-  }
-
-  // The home page has its own painting, so only the other pages get the live sky.
-  const startPaint = () => {
-    if (lightWeight || isHome) return;
-    const canvas = document.createElement("canvas");
-    canvas.className = "paint-bg";
-    canvas.setAttribute("aria-hidden", "true");
-    document.body.prepend(canvas);
-
-    const giveUp = (error) => {
-      if (error) console.warn("Sky canvas not started; the plain gradient stays.", error);
-      canvas.remove();
-    };
-
-    loadScript("paint.js")
-      .then(() => {
-        window.PhilosophiaPaint.default({
-          canvas,
-          dark: 0.8,
-          horizon: 0.4,
-          still: reducedMotion.matches,
-          onFail: giveUp,
-        });
-        canvas.classList.add("is-ready");
-      })
-      .catch(giveUp);
-  };
-
-  if ("requestIdleCallback" in window) {
-    window.requestIdleCallback(startPaint, { timeout: 1200 });
-  } else {
-    window.setTimeout(startPaint, 300);
   }
 
   // On long pages, elements below the fold fade up once. Elements already in view stay untouched.

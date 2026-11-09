@@ -2,13 +2,12 @@
   "name": "philosophia-web-tools",
   "private": true,
   "type": "module",
-  "description": "Bundles the Three.js paint background and Lenis smooth scroll into website/assets/js.",
+  "description": "Bundles Lenis smooth scroll into website/assets/js.",
   "scripts": {
     "build": "node build.mjs"
   },
   "dependencies": {
     "esbuild": "0.28.2",
-    "lenis": "1.3.27",
-    "three": "0.187.0"
+    "lenis": "1.3.27"
   }
 }

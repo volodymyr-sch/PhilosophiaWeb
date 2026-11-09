@@ -1,15 +1,15 @@
-/* Philosophia — dusk above the clouds.
-   Home: one painting of a philosopher reading at dusk. Other pages: a painted sky drawn live
-   by assets/js/paint.js (Three.js). Classical type, no webfonts. */
+/* Philosophia — a philosopher reading at night, in black and white.
+   Home: home.js draws him in grain above a sea of clouds, under a turning star map.
+   Other pages: the same night, still (a star map and fine grain, no script). Classical type, no webfonts. */
 
 :root {
-  --ink: #070b26;
-  --paper: #f4f3ff;
-  --paper-dim: #cfd3f7;
-  --muted: #a3a9dc;
-  --line: rgba(226, 230, 255, 0.18);
-  --line-2: rgba(226, 230, 255, 0.36);
-  --glass: rgba(8, 13, 42, 0.58);
+  --ink: #0a0a0b;
+  --paper: #f5f5f5;
+  --paper-dim: #d2d2d2;
+  --muted: #a8a8a8;
+  --line: rgba(255, 255, 255, 0.18);
+  --line-2: rgba(255, 255, 255, 0.36);
+  --glass: rgba(10, 10, 11, 0.58);
   --max: 1180px;
   --serif: ui-serif, "New York", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
   --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
@@ -20,11 +20,10 @@
   box-sizing: border-box;
 }
 
-/* The sky canvas sits above this gradient, below the page. The gradient is also the fallback. */
 html {
   color-scheme: dark;
   scroll-padding-top: 92px;
-  background: linear-gradient(180deg, #070b26 0%, #101a52 55%, #2a2f86 80%, #6a5fb0 100%) fixed;
+  background: var(--ink);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -64,23 +63,19 @@ body {
 }
 
 main {
-  text-shadow: 0 1px 22px rgba(2, 4, 24, 0.85);
+  text-shadow: 0 1px 22px rgba(0, 0, 0, 0.85);
 }
 
-.paint-bg {
+/* The still night behind the reading pages: a faint star map and fine grain, like the home page. */
+body::before {
   position: fixed;
   inset: 0;
   z-index: -1;
-  display: block;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
+  background:
+    url("../images/night-sky.svg") 50% 0 / cover no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
   pointer-events: none;
-  transition: opacity 1.8s ease;
-}
-
-.paint-bg.is-ready {
-  opacity: 1;
+  content: "";
 }
 
 img {
@@ -109,15 +104,11 @@ button {
   outline-offset: 4px;
 }
 
-/* A soft warm highlight: the text stays white and readable. The home sky is bright, so there it is dark ink. */
+/* A soft grey highlight: the text stays white and readable. */
 ::selection {
   color: #fff;
-  background: rgba(255, 200, 140, 0.34);
+  background: rgba(255, 255, 255, 0.26);
   text-shadow: none;
-}
-
-.landing-page ::selection {
-  background: rgba(9, 14, 62, 0.5);
 }
 
 h1,
@@ -224,7 +215,7 @@ p {
 
 .site-header.is-scrolled,
 .site-header.is-open {
-  background: rgba(7, 11, 38, 0.76);
+  background: rgba(10, 10, 11, 0.76);
   border-color: var(--line);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
@@ -704,7 +695,7 @@ code {
   padding: 0.12em 0.4em;
   color: var(--paper-dim);
   font: 0.82em ui-monospace, SFMono-Regular, Menlo, monospace;
-  background: rgba(226, 230, 255, 0.07);
+  background: rgba(255, 255, 255, 0.07);
   border-radius: 6px;
   word-break: break-all;
 }
@@ -1071,7 +1062,7 @@ code {
   margin-top: 2rem;
   padding: clamp(3rem, 6vw, 5rem) 0 2rem;
   border-top: 1px solid var(--line);
-  background: linear-gradient(to bottom, transparent, rgba(2, 4, 24, 0.6));
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.6));
 }
 
 .footer-grid {
@@ -1138,10 +1129,10 @@ code {
   padding: clamp(1.1rem, 2.5vw, 1.5rem);
   color: var(--paper);
   text-shadow: none;
-  background: rgba(8, 12, 40, 0.96);
+  background: rgba(10, 10, 11, 0.96);
   border: 1px solid var(--line-2);
   border-radius: 22px;
-  box-shadow: 0 24px 80px rgba(2, 4, 20, 0.7);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
 }
 
 .analytics-consent__copy .eyebrow {
@@ -1200,17 +1191,26 @@ code {
   display: none;
 }
 
-/* ---------- Home: one screen, no scrolling, a painting behind the text ---------- */
+/* ---------- Home: one screen, no scrolling ----------
+   The philosopher reads above a sea of clouds at night, under a slowly turning star map. Letters rise
+   from his scroll to his eyes, and his thoughts blow away from the back of his head as letters.
+   home.js draws all of it on one canvas, in grain. One side margin (--gutter) for every part. */
 
-/* The colors of the painting, so the page looks right while the picture loads. */
+/* The tones of the night scene, so the page looks right before the canvas comes in. */
 html:has(.landing-page) {
   overflow: hidden;
-  background: linear-gradient(180deg, #314983 0%, #5b6ca9 25%, #8783b5 42%, #a28eb2 48%, #796178 55%, #414153 66%, #363a4e 100%);
+  background: linear-gradient(180deg, #0a0a0b 0%, #111113 40%, #3b3b3d 64%, #202022 78%, #121213 100%);
 }
 
 .landing-page {
+  --gutter: max(6vw, 24px);
   height: 100svh;
   overflow: hidden;
+}
+
+/* The home has its own night, so the still sky of the reading pages is not needed. */
+.landing-page::before {
+  display: none;
 }
 
 .landing-page .site-header {
@@ -1223,6 +1223,11 @@ html:has(.landing-page) {
   backdrop-filter: none;
 }
 
+.landing-page .site-header .container {
+  width: auto;
+  margin-inline: var(--gutter);
+}
+
 .landing-page .site-nav > a:not(.button) {
   color: rgba(255, 255, 255, 0.86);
 }
@@ -1233,353 +1238,6 @@ html:has(.landing-page) {
 
 .landing-page .site-nav > a:not(.button)::after {
   background: #fff;
-}
-
-/* The painting fills the screen. It zooms in very slowly, and the pointer moves it
-   a little (home.js sets --px and --py), so it feels alive. home.js puts a live WebGL copy
-   (a canvas) over the picture, with the same fit, and fades it in. */
-.painting {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  transform-origin: 52% 62%;
-  scale: 1.04;
-  translate: calc(var(--px, 0) * -14px) calc(var(--py, 0) * -8px);
-  transition: translate 1.6s cubic-bezier(0.2, 0.7, 0.1, 1);
-  animation: slow-zoom 40s ease-in-out infinite alternate;
-}
-
-.painting img,
-.painting canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* The philosopher sits a little right of the middle. On narrow screens he stays in view.
-     On very wide screens more sky is cut than flowers (home.js uses the same 60%). */
-  object-position: 52% 60%;
-}
-
-.painting canvas {
-  opacity: 0;
-  transition: opacity 1.2s ease;
-}
-
-.painting canvas.is-live {
-  opacity: 1;
-}
-
-/* A soft shade at the bottom, so the quote and the footer stay easy to read on the flowers. */
-.painting::after {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(0deg, rgba(14, 18, 48, 0.5) 0%, rgba(14, 18, 48, 0) 20%);
-  content: "";
-}
-
-@keyframes slow-zoom {
-  from {
-    scale: 1.04;
-  }
-  to {
-    scale: 1.09;
-  }
-}
-
-/* The text sits in the empty sky above him, in one centered column. */
-.stage {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: clamp(4.6rem, 12svh, 8.5rem) 24px 0;
-  text-align: center;
-  text-shadow: 0 2px 26px rgba(18, 26, 78, 0.55);
-  pointer-events: none;
-}
-
-.stage > * {
-  pointer-events: auto;
-}
-
-.stage .eyebrow {
-  margin: 0 0 1.1rem;
-  color: rgba(255, 255, 255, 0.82);
-}
-
-.stage .eyebrow::before {
-  display: none;
-}
-
-.stage h1 {
-  color: #fff;
-  font-size: clamp(2.4rem, min(4.3vw, 8.4svh), 4.9rem);
-  line-height: 1.04;
-  letter-spacing: -0.03em;
-}
-
-.stage h1 em {
-  font-style: italic;
-}
-
-.stage .lede {
-  max-width: 30rem;
-  margin: 1.1rem auto 0;
-  color: rgba(255, 255, 255, 0.92);
-  font-size: clamp(1rem, 1.25vw, 1.18rem);
-  text-wrap: balance;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.7rem;
-  margin-top: 1.6rem;
-}
-
-/* Quiet glass badges, so the painting stays the main thing on the screen. */
-.landing-page .store-button {
-  gap: 0.8rem;
-  min-height: 56px;
-  padding: 0 1.6rem 0 1.3rem;
-  color: #fff;
-  letter-spacing: 0;
-  text-transform: none;
-  text-shadow: none;
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-}
-
-.landing-page .store-button:hover,
-.landing-page .store-button:focus-visible {
-  color: #1c2a66;
-  background: #fff;
-  border-color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(14, 22, 70, 0.35);
-}
-
-.landing-page .store-button svg {
-  width: 24px;
-  height: 24px;
-}
-
-.store-button span {
-  display: grid;
-  line-height: 1.1;
-  text-align: left;
-}
-
-.store-button small {
-  font: 600 0.58rem/1 var(--sans);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-
-.store-button strong {
-  font: 600 1.16rem/1.15 var(--serif);
-  letter-spacing: 0.01em;
-}
-
-/* Stars that appear around the pointer, in the sky of the painting (home.js draws them). */
-.star-sky {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1;
-  width: 100%;
-  pointer-events: none;
-}
-
-/* One real quote at the bottom right, away from the philosopher. */
-.caption {
-  position: fixed;
-  right: 5vw;
-  bottom: calc(52px + env(safe-area-inset-bottom));
-  z-index: 3;
-  max-width: 24rem;
-  margin: 0;
-  color: rgba(255, 255, 255, 0.94);
-  font-size: 1.05rem;
-  line-height: 1.4;
-  text-align: right;
-  text-shadow: 0 1px 16px rgba(10, 14, 40, 0.85);
-  transition: opacity 1.6s ease;
-}
-
-.caption q {
-  font-style: italic;
-}
-
-.caption cite {
-  display: block;
-  margin-top: 0.4rem;
-  color: rgba(255, 255, 255, 0.72);
-  font: 600 0.62rem/1.4 var(--sans);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-}
-
-.caption.is-out {
-  opacity: 0;
-}
-
-.home-foot {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 24px calc(12px + env(safe-area-inset-bottom));
-  color: rgba(255, 255, 255, 0.7);
-  font: 0.72rem/1.5 var(--sans);
-  text-shadow: 0 1px 10px rgba(5, 8, 30, 0.8);
-}
-
-.home-foot nav {
-  display: flex;
-  gap: 1.2rem;
-}
-
-.home-foot a,
-.home-foot .analytics-preferences {
-  color: inherit;
-  font: inherit;
-  text-decoration: none;
-}
-
-.home-foot a:hover,
-.home-foot .analytics-preferences:hover {
-  color: #fff;
-  text-decoration: underline;
-}
-
-/* Tall screens (phones, tablets held upright): the quote is centered under him. */
-@media (max-aspect-ratio: 5/4) {
-  .caption {
-    right: 0;
-    bottom: calc(46px + env(safe-area-inset-bottom));
-    left: 0;
-    max-width: 40rem;
-    margin: 0 auto;
-    padding: 0 24px;
-    text-align: center;
-  }
-}
-
-/* Narrow screens: the headline breaks after the first sentence, never in the middle of one. */
-@media (max-width: 760px) {
-  .stage h1 {
-    font-size: clamp(2.4rem, 11vw, 3.4rem);
-  }
-
-  .stage h1 em {
-    display: block;
-  }
-
-  .landing-page .site-nav {
-    background: rgba(28, 40, 96, 0.94);
-  }
-}
-
-/* Phones: smaller badges side by side. */
-@media (max-width: 480px) {
-  .stage .lede {
-    margin-top: 0.9rem;
-  }
-
-  .actions {
-    gap: 0.5rem;
-    margin-top: 1.2rem;
-  }
-
-  .landing-page .store-button {
-    gap: 0.5rem;
-    min-height: 50px;
-    padding: 0 0.95rem 0 0.8rem;
-  }
-
-  .landing-page .store-button svg {
-    width: 21px;
-    height: 21px;
-  }
-
-  .landing-page .store-button small {
-    font-size: 0.48rem;
-  }
-
-  .landing-page .store-button strong {
-    font-size: 1rem;
-  }
-}
-
-@media (max-height: 700px) {
-  .stage {
-    padding-top: clamp(4rem, 10svh, 6rem);
-  }
-
-  .stage .eyebrow {
-    display: none;
-  }
-}
-
-@media (max-height: 560px) {
-  .stage .lede,
-  .stage .eyebrow,
-  .caption {
-    display: none;
-  }
-}
-
-/* ---------- Home B (prototype, reader.html): the philosopher drawn as grain, close up ----------
-   He sits above a sea of clouds at night, under a slowly turning star map. Letters rise from his
-   scroll to his eyes, and his thoughts blow away from the back of his head as letters. home.js draws
-   all of it on one canvas, in the same grain. Black and white only, like the app's brand. */
-
-/* The tones of the night scene, so the page looks right before the canvas comes in. */
-html:has(.reader-page) {
-  background: linear-gradient(180deg, #0a0a0b 0%, #111113 40%, #3b3b3d 64%, #202022 78%, #121213 100%);
-}
-
-/* The site's colors have a little blue in them (for the blue skies). Here they are pure grey.
-   One side margin for everything: the logo, the text, the quote and the footer line up. */
-.reader-page {
-  --gutter: max(6vw, 24px);
-  --ink: #0a0a0b;
-  --paper: #f5f5f5;
-  --paper-dim: #d2d2d2;
-  --muted: #a8a8a8;
-  --line: rgba(255, 255, 255, 0.18);
-  --line-2: rgba(255, 255, 255, 0.36);
-  --glass: rgba(10, 10, 11, 0.58);
-}
-
-.reader-page .site-header .container {
-  width: auto;
-  margin-inline: var(--gutter);
-}
-
-.reader-page .home-foot {
-  padding-right: var(--gutter);
-  padding-left: var(--gutter);
-}
-
-.reader-page .analytics-consent {
-  background: rgba(10, 10, 11, 0.96);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
 }
 
 /* The picture is the fallback and the size guide: home.js draws him at the same place. */
@@ -1620,41 +1278,177 @@ html:has(.reader-page) {
   opacity: 1;
 }
 
-/* The text is on the left, in the dark. He looks toward it. */
-.reader-page .stage {
-  right: auto;
-  width: calc(var(--gutter) + min(44vw, 40rem));
+/* The text is on the left, in the middle of the sky. He looks toward it.
+   The clouds start at 64% of the height (home.js NIGHT.horizon), so the text stays above them. */
+.stage {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  /* The text sits in the middle of the sky. The clouds start at 64% of the height (home.js NIGHT.horizon). */
+  width: calc(var(--gutter) + min(44vw, 40rem));
   padding: 72px 0 calc(36svh + 24px) var(--gutter);
   text-align: left;
   text-shadow: 0 1px 20px #000;
+  pointer-events: none;
 }
 
-.reader-page .stage h1 em {
+.stage > * {
+  pointer-events: auto;
+}
+
+.stage .eyebrow {
+  margin: 0 0 1.1rem;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.stage .eyebrow::before {
+  display: none;
+}
+
+.stage h1 {
+  color: #fff;
+  font-size: clamp(2.4rem, min(4.3vw, 8.4svh), 4.9rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+
+.stage h1 em {
   display: block;
+  font-style: italic;
 }
 
-.reader-page .stage .lede {
+.stage .lede {
+  max-width: 30rem;
   margin: 1.2rem 0 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(1rem, 1.25vw, 1.18rem);
+  text-wrap: balance;
 }
 
-.reader-page .stage .lede,
-.reader-page .actions {
-  justify-content: flex-start;
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.6rem;
 }
 
-.reader-page .store-button:hover,
-.reader-page .store-button:focus-visible {
+/* Quiet glass badges, so the night stays the main thing on the screen. */
+.landing-page .store-button {
+  gap: 0.8rem;
+  min-height: 56px;
+  padding: 0 1.6rem 0 1.3rem;
+  color: #fff;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.landing-page .store-button:hover,
+.landing-page .store-button:focus-visible {
   color: #000;
+  background: #fff;
+  border-color: #fff;
+  transform: translateY(-2px);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
-.reader-page .caption {
-  right: auto;
-  left: var(--gutter);
+.landing-page .store-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.store-button span {
+  display: grid;
+  line-height: 1.1;
   text-align: left;
+}
+
+.store-button small {
+  font: 600 0.58rem/1 var(--sans);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.store-button strong {
+  font: 600 1.16rem/1.15 var(--serif);
+  letter-spacing: 0.01em;
+}
+
+/* One real quote at the bottom left, under the text. */
+.caption {
+  position: fixed;
+  bottom: calc(52px + env(safe-area-inset-bottom));
+  left: var(--gutter);
+  z-index: 3;
+  max-width: 24rem;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 1.05rem;
+  line-height: 1.4;
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.85);
+  transition: opacity 1.6s ease;
+}
+
+.caption q {
+  font-style: italic;
+}
+
+.caption cite {
+  display: block;
+  margin-top: 0.4rem;
+  color: rgba(255, 255, 255, 0.72);
+  font: 600 0.62rem/1.4 var(--sans);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.caption.is-out {
+  opacity: 0;
+}
+
+.home-foot {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom));
+  color: rgba(255, 255, 255, 0.7);
+  font: 0.72rem/1.5 var(--sans);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
+}
+
+.home-foot nav {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.home-foot a,
+.home-foot .analytics-preferences {
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}
+
+.home-foot a:hover,
+.home-foot .analytics-preferences:hover {
+  color: #fff;
+  text-decoration: underline;
 }
 
 /* Tall screens: the text at the top, he sits at the bottom. */
@@ -1666,21 +1460,66 @@ html:has(.reader-page) {
     translate: -50% 0;
   }
 
-  .reader-page .stage {
+  .stage {
     right: 0;
     width: auto;
     justify-content: flex-start;
     padding: clamp(5rem, 12svh, 8rem) var(--gutter) 0;
   }
 
-  .reader-page .caption {
+  .caption {
     display: none;
   }
 }
 
 @media (max-width: 760px) {
-  .reader-page .site-nav {
-    background: rgba(8, 9, 11, 0.96);
+  .stage h1 {
+    font-size: clamp(2.4rem, 11vw, 3.4rem);
+  }
+}
+
+/* Phones: smaller badges side by side. */
+@media (max-width: 480px) {
+  .stage .lede {
+    margin-top: 0.9rem;
+  }
+
+  .actions {
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+  }
+
+  .landing-page .store-button {
+    gap: 0.5rem;
+    min-height: 50px;
+    padding: 0 0.95rem 0 0.8rem;
+  }
+
+  .landing-page .store-button svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .landing-page .store-button small {
+    font-size: 0.48rem;
+  }
+
+  .landing-page .store-button strong {
+    font-size: 1rem;
+  }
+}
+
+@media (max-height: 700px) {
+  .stage .eyebrow {
+    display: none;
+  }
+}
+
+@media (max-height: 560px) {
+  .stage .lede,
+  .stage .eyebrow,
+  .caption {
+    display: none;
   }
 }
 
@@ -1768,7 +1607,7 @@ html:has(.reader-page) {
     align-items: stretch;
     gap: 0;
     padding: 0.6rem 18px 1.6rem;
-    background: rgba(7, 11, 38, 0.97);
+    background: rgba(10, 10, 11, 0.97);
     border-bottom: 1px solid var(--line);
   }
 
@@ -1819,7 +1658,7 @@ html:has(.reader-page) {
     justify-content: space-between;
     gap: 1rem;
     padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-    background: rgba(7, 11, 38, 0.94);
+    background: rgba(10, 10, 11, 0.94);
     border-top: 1px solid var(--line-2);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
@@ -1869,10 +1708,6 @@ html:has(.reader-page) {
   .reveal {
     opacity: 1;
     transform: none;
-  }
-
-  .painting {
-    animation: none !important;
   }
 }
 

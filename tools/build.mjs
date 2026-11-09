@@ -1,5 +1,5 @@
-// Bundles the two browser files into website/assets/js.
-// They are plain scripts (IIFE), not ES modules, so the site also works when
+// Bundles the smooth-scroll script into website/assets/js.
+// It is a plain script (IIFE), not an ES module, so the site also works when
 // index.html is opened from disk (file://), where browsers block module scripts.
 // Run: cd tools && npm install && npm run build
 import { build } from "esbuild";
@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 const out = fileURLToPath(new URL("../website/assets/js/", import.meta.url));
 
 // File name -> global that holds the module (use `Global.default(...)`).
-const globals = { paint: "PhilosophiaPaint", scroll: "PhilosophiaScroll" };
+const globals = { scroll: "PhilosophiaScroll" };
 
 for (const [name, globalName] of Object.entries(globals)) {
   const file = `${out}${name}.js`;
