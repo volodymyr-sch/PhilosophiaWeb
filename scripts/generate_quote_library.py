@@ -25,7 +25,7 @@ SITE = PROJECT / "website"
 CANONICAL = "https://philosophiaquotes.com"
 APP_STORE = "https://apps.apple.com/us/app/philosophy-daily-quotes/id6746213108"
 PLAY_STORE = "https://play.google.com/store/apps/details?id=com.vlsch.serenity"
-CSS_VERSION = "20261109-1"
+CSS_VERSION = "20261109-4"
 
 INITIAL_AUTHORS = (
     "Marcus Aurelius",

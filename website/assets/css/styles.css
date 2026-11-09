@@ -497,10 +497,10 @@ a.detail-chip:hover {
 }
 
 .quote-hero blockquote {
-  max-width: 24ch;
+  max-width: 28ch;
   margin: 0 0 2rem;
-  font-size: clamp(2rem, 5vw, 4rem);
-  line-height: 1.16;
+  font-size: clamp(1.75rem, 3.6vw, 3rem);
+  line-height: 1.2;
   letter-spacing: -0.015em;
 }
 
@@ -626,10 +626,11 @@ a.detail-chip:hover {
   line-height: 1.78;
 }
 
+/* On quote pages this h1 heads the reading under the quote: section size, so the quote stays the main text. */
 .prose > section:first-child > h1,
 .prose > h1 {
   margin-bottom: 1.6rem;
-  font-size: clamp(1.9rem, 3.8vw, 2.9rem);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
 }
 
 .prose h2 {
