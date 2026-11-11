@@ -161,13 +161,14 @@ All production pages use local files. The Apple CDN URLs are retained here for p
 | App icon | `https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/67/ff/f5/67fff50f-04a3-82a7-d8c9-26123cd4931c/AppIcon-0-0-1x_U007epad-0-11-0-85-220.png/512x512bb.png` | `website/assets/app-store/originals/app-icon.png` | `app-icon-128.webp`, `app-icon-256.webp` |
 | Screenshot 1: daily quote | `https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/9a/02/c6/9a02c69e-dc2c-c122-e2eb-b3f62dc530f2/1.png/1284x2778bb.png` | `screenshot-01.png` | 360 px and 640 px WebP |
 | Screenshot 2: widget | `https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/57/da/f8/57daf896-7bd7-36f5-9d11-e02f348430bd/2.png/1284x2778bb.png` | `screenshot-02.png` | 360 px and 640 px WebP |
-| Screenshot 3: schools | `https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/c0/e3/a5/c0e3a514-4b4e-dc85-5a2c-f1a61ed2a38b/3.png/1284x2778bb.png` | `screenshot-03.png` | 360 px and 640 px WebP |
-| Screenshot 4: saved library | `https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/f5/ef/09/f5ef0988-88a7-5654-9aa5-ee37e35d5c8d/4.png/1284x2778bb.png` | `screenshot-04.png` | 360 px and 640 px WebP |
-| Screenshot 5: philosophers | `https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/2a/b0/42/2ab042e6-34ca-a2f8-7e26-3b0bb95e1914/5.png/1284x2778bb.png` | `screenshot-05.png` | 360 px and 640 px WebP |
-| New main-screen UI | User-provided attachment | `main-screen-redesign.png` | 480 px and 706 px WebP |
+| Screenshot 3: schools | `https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/c0/e3/a5/c0e3a514-4b4e-dc85-5a2c-f1a61ed2a38b/3.png/1284x2778bb.png` | `source-images/app-store/screenshot-03.png` | 360 px and 640 px WebP |
+| Screenshot 4: saved library | `https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/f5/ef/09/f5ef0988-88a7-5654-9aa5-ee37e35d5c8d/4.png/1284x2778bb.png` | `source-images/app-store/screenshot-04.png` | 360 px and 640 px WebP |
+| Screenshot 5: philosophers | `https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/2a/b0/42/2ab042e6-34ca-a2f8-7e26-3b0bb95e1914/5.png/1284x2778bb.png` | `source-images/app-store/screenshot-05.png` | 360 px and 640 px WebP |
+| New main-screen UI | User-provided attachment | `source-images/app-store/main-screen-redesign.png` | 480 px and 706 px WebP |
 | Animated main-screen demo | User-provided 800 × 1644, 17.13-second H.264 screen recording | Source attachment retained outside the deployable site | `philosophia-demo-clean.mp4` (H.264, 600 × 1234, 30 fps), `philosophia-demo-clean.webm` (VP9, 600 × 1234, 30 fps), and `philosophia-demo-poster-clean.webp`; the outer recording canvas is masked to the site background so off-device text cannot show |
 | Social card | Apple artwork derivative | `social-card.png` | Used locally for Open Graph/Twitter cards |
 
+Originals that no page or structured data links to are kept in `source-images/app-store/`, outside the deployed `website` folder. The others stay in `website/assets/app-store/originals/`.
 Original screenshot dimensions are 1284 × 2778. The supplied redesign file is 710 × 1378. The social card is 1200 × 630.
 The optimized product demo preserves the complete 17.13-second recording without audio. The MP4 is approximately 659 KB, the WebM is approximately 712 KB, and the WebP poster is approximately 26 KB. The first and final frames were visually compared and do not require an artificial loop crossfade.
 

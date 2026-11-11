@@ -80,6 +80,8 @@
     }
   };
 
+  const privacyPolicyUrl = new URL("../../privacy-policy.html", selfScript?.src || window.location.href).href;
+
   const removeConsentPrompt = () => {
     document.querySelector("[data-analytics-consent]")?.remove();
   };
@@ -100,7 +102,7 @@
       <div class="analytics-consent__copy">
         <p class="eyebrow">Your privacy</p>
         <h2 id="analytics-consent-title">Help us improve Philosophia.</h2>
-        <p>With your permission, Google Analytics measures page visits and App Store or Google Play clicks. We do not use analytics for advertising. <a href="https://philosophia-org.github.io/privacy-policy/">Privacy policy</a></p>
+        <p>With your permission, Google Analytics measures page visits and App Store or Google Play clicks. We do not use analytics for advertising. <a href="${privacyPolicyUrl}">Privacy policy</a></p>
       </div>
       <div class="analytics-consent__actions">
         <button class="button button-small" type="button" data-consent-allow>Allow analytics</button>
@@ -122,7 +124,7 @@
   };
 
   const addAnalyticsPreferenceControls = () => {
-    document.querySelectorAll('a[href*="privacy-policy"]').forEach((privacyLink) => {
+    document.querySelectorAll('a[href$="privacy-policy.html"]').forEach((privacyLink) => {
       if (privacyLink.closest("[data-analytics-consent]")) return;
       if (privacyLink.parentElement?.querySelector("[data-analytics-preferences]")) return;
       const control = document.createElement("button");
@@ -269,28 +271,69 @@
     });
   });
 
+  // The active section is the last one whose heading is above 35% of the screen height.
   const tocLinks = [...document.querySelectorAll(".toc a[href^='#']")];
   const sections = tocLinks
     .map((link) => document.querySelector(link.getAttribute("href")))
     .filter(Boolean);
 
-  if ("IntersectionObserver" in window && sections.length > 0) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!visible) return;
-        tocLinks.forEach((link) => {
-          link.classList.toggle(
-            "is-active",
-            link.getAttribute("href") === `#${visible.target.id}`,
-          );
-        });
-      },
-      { rootMargin: "-20% 0px -65%", threshold: [0, 0.25, 0.75] },
-    );
-    sections.forEach((section) => observer.observe(section));
+  if (sections.length > 0) {
+    const markActiveSection = () => {
+      const line = window.innerHeight * 0.35;
+      const current = sections.filter((section) => section.getBoundingClientRect().top <= line).pop() || sections[0];
+      tocLinks.forEach((link) => {
+        link.classList.toggle("is-active", link.getAttribute("href") === `#${current.id}`);
+      });
+    };
+    markActiveSection();
+    window.addEventListener("scroll", markActiveSection, { passive: true });
+    window.addEventListener("resize", markActiveSection);
+  }
+
+  // ---- The header pill: after the page title scrolls away, it shows the page name ----
+  // The name opens the list of sections, so readers always know where they are (styles.css).
+  // Wide screens show the list in a panel left of the text instead, so it stays in its aside there.
+  const toc = document.querySelector(".toc");
+  const tocAside = toc?.parentElement;
+  const pageTop = document.querySelector(".quote-hero, .guide-hero");
+  const brand = header?.querySelector(".brand");
+  if (header && toc && tocAside && pageTop && brand && "IntersectionObserver" in window) {
+    const pill = document.createElement("button");
+    const label = document.createElement("span");
+    label.textContent = document.querySelector(".breadcrumbs [aria-current]")?.textContent.trim() || "On this page";
+    pill.type = "button";
+    pill.className = "page-pill";
+    pill.append(label);
+    toc.id = "page-sections";
+    pill.setAttribute("aria-controls", toc.id);
+    pill.setAttribute("aria-expanded", "false");
+    brand.after(pill);
+
+    const setSections = (open) => {
+      header.classList.toggle("is-toc-open", open);
+      pill.setAttribute("aria-expanded", String(open));
+    };
+    const wideScreen = window.matchMedia("(min-width: 1180px)");
+    const placeSections = () => {
+      setSections(false);
+      (wideScreen.matches ? tocAside : header).append(toc);
+    };
+    placeSections();
+    wideScreen.addEventListener("change", placeSections);
+    pill.addEventListener("click", () => setSections(!header.classList.contains("is-toc-open")));
+    toc.addEventListener("click", (event) => {
+      if (event.target instanceof Element && event.target.closest("a")) setSections(false);
+    });
+    document.addEventListener("click", (event) => {
+      if (event.target instanceof Node && !header.contains(event.target)) setSections(false);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setSections(false);
+    });
+    new IntersectionObserver(([entry]) => {
+      header.classList.toggle("is-reading", !entry.isIntersecting);
+      if (entry.isIntersecting) setSections(false);
+    }).observe(pageTop);
   }
 
   document.querySelectorAll("[data-current-year]").forEach((node) => {
@@ -326,31 +369,5 @@
       .catch((error) => {
         console.warn("Smooth scroll not started; native scrolling stays.", error);
       });
-  }
-
-  // On long pages, elements below the fold fade up once. Elements already in view stay untouched.
-  const revealTargets = isHome
-    ? []
-    : document.querySelectorAll(
-        ".prose > *, .quote-card, .library-card, .guide-card, .related-card, .cta-band, .source-lens, .faq-item",
-      );
-  if ("IntersectionObserver" in window && !reducedMotion.matches && revealTargets.length > 0) {
-    const revealer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-visible");
-          revealer.unobserve(entry.target);
-        });
-      },
-      { rootMargin: "0px 0px -6% 0px" },
-    );
-    revealTargets.forEach((element) => {
-      if (element.getBoundingClientRect().top < window.innerHeight * 0.92) return;
-      const index = Array.prototype.indexOf.call(element.parentElement?.children ?? [], element);
-      element.style.setProperty("--d", `${(index % 3) * 80}ms`);
-      element.classList.add("reveal");
-      revealer.observe(element);
-    });
   }
 })();

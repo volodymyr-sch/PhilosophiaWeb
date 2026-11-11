@@ -7,6 +7,7 @@ export default function startScroll() {
     lerp: 0.085,
     wheelMultiplier: 0.95,
     smoothWheel: true,
-    anchors: { offset: -88 },
+    // Section links: Lenis already keeps the html scroll-padding-top (styles.css) free for the header.
+    anchors: true,
   });
 }

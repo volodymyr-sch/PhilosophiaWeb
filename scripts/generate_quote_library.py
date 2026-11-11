@@ -25,7 +25,7 @@ SITE = PROJECT / "website"
 CANONICAL = "https://philosophiaquotes.com"
 APP_STORE = "https://apps.apple.com/us/app/philosophy-daily-quotes/id6746213108"
 PLAY_STORE = "https://play.google.com/store/apps/details?id=com.vlsch.serenity"
-CSS_VERSION = "20261109-6"
+CSS_VERSION = "20261111-4"
 
 INITIAL_AUTHORS = (
     "Marcus Aurelius",
@@ -591,7 +591,7 @@ def footer(location: str) -> str:
         <div class="footer-brand"><a class="brand" href="../index.html"><img src="../assets/images/app-icon-128.webp" width="38" height="38" alt=""><span>Philosophia</span></a><p>Daily wisdom from history’s greatest minds.</p></div>
         <div class="footer-col"><h2>Download</h2><a href="{APP_STORE}" data-location="{esc(location)}-footer-app-store" rel="noopener">App Store</a><a href="{PLAY_STORE}" data-location="{esc(location)}-footer-google-play" rel="noopener">Google Play</a></div>
         <div class="footer-col"><h2>Explore</h2><a href="../quotes/index.html">Quote library</a><a href="../philosophers/index.html">Philosophers</a><a href="../works/index.html">Works</a><a href="../schools/index.html">Schools</a><a href="../topics/index.html">Topics</a><a href="../guides/index.html">Guides</a><a href="../faq.html">FAQ</a></div>
-        <div class="footer-col"><h2>Support</h2><a href="https://philosophia-org.github.io/privacy-policy/">Privacy policy</a><a href="mailto:philosophia.application@gmail.com">Contact</a></div>
+        <div class="footer-col"><h2>Support</h2><a href="../privacy-policy.html">Privacy policy</a><a href="mailto:philosophia.application@gmail.com">Contact</a></div>
       </div>
       <div class="container footer-bottom"><span>© <span data-current-year>2026</span> VlSch.</span><span>Read the line. Follow the source.</span></div>
     </footer>"""
@@ -689,12 +689,35 @@ def find_work(author: str, source: str) -> str | None:
     return None
 
 
+def portrait(author: str, css_class: str = "avatar", size: int = 40, alt: str = "", loading: str = "lazy") -> str:
+    """The philosopher's portrait from the app (assets/images/philosophers), or nothing if there is none."""
+    slug = slugify(author)
+    if not (SITE / "assets" / "images" / "philosophers" / f"{slug}.webp").exists():
+        return ""
+    return (
+        f'<img class="{css_class}" src="../assets/images/philosophers/{slug}.webp" width="{size}" height="{size}" '
+        f'alt="{esc(alt)}" loading="{loading}" decoding="async">'
+    )
+
+
+def school_figure(school: str | None) -> str:
+    """The school's black-and-white scene from the app (assets/images/schools), or nothing if there is none."""
+    if not school:
+        return ""
+    slug = slugify(school)
+    if not (SITE / "assets" / "images" / "schools" / f"{slug}.webp").exists():
+        return ""
+    return (
+        f'<figure class="scene-figure"><img src="../assets/images/schools/{slug}.webp" width="1000" height="400" '
+        f'alt="{esc(school)}: an illustration from the Philosophia app" loading="lazy" decoding="async"></figure>'
+    )
+
+
 def quote_card(row: dict, slugs: dict[str, str], prefix: str = "../quotes/") -> str:
     return f"""
         <a class="quote-card" href="{prefix}{esc(slugs[row['id']])}.html">
           <blockquote>“{esc(row['text'])}”</blockquote>
-          <span>{esc(row['author'])}</span>
-          <small>{esc(row['source'])}</small>
+          <div class="card-meta">{portrait(row['author'])}<div><span>{esc(row['author'])}</span><small>{esc(row['source'])}</small></div></div>
         </a>"""
 
 
@@ -816,8 +839,9 @@ def quote_page(
           <nav class="breadcrumbs" aria-label="Breadcrumb">{breadcrumb_html([("Home", "/index.html"), ("Quotes", "/quotes/index.html"), (row["author"], path)])}</nav>
           <p class="eyebrow">{esc(topic["name"])}</p>
           <blockquote>“{esc(row["text"])}”</blockquote>
-          <p class="quote-attribution"><a href="../philosophers/{author_slug}.html">{esc(row["author"])}</a><span>{esc(row["source"])}</span></p>
+          <p class="quote-attribution">{portrait(row["author"], loading="eager")}<a href="../philosophers/{author_slug}.html">{esc(row["author"])}</a><span>{esc(row["source"])}</span></p>
           <div class="detail-chips"><a class="detail-chip" href="../philosophers/{author_slug}.html">{esc(row["author"])}</a>{work_link}{school_link}<a class="detail-chip" href="../topics/{topic_slug}.html">{esc(topic["name"])}</a></div>
+          {school_figure(school)}
         </div>
       </header>
 
@@ -944,6 +968,8 @@ def hub_page(
     quote_rows: list[dict],
     quote_slugs: dict[str, str],
     published_date: str,
+    portrait_html: str = "",
+    figure_html: str = "",
 ) -> str:
     path = f"/{section}/{slug}.html"
     cards = "".join(quote_card(row, quote_slugs) for row in quote_rows[:12])
@@ -980,10 +1006,12 @@ def hub_page(
     <main id="hub-content">
       <header class="guide-hero hub-hero"><div class="container">
         <nav class="breadcrumbs" aria-label="Breadcrumb">{breadcrumb_html([("Home", "/index.html"), (section.title(), f"/{section}/index.html"), (heading, path)])}</nav>
+        {portrait_html}
         <p class="eyebrow">{esc(eyebrow)}</p>
         <h1>{esc(heading)}</h1>
         <p class="lede">{esc(lede)}</p>
         <div class="guide-meta"><span>{len(quote_rows)} published quotes</span><span>Source-aware collection</span></div>
+        {figure_html}
       </div></header>
       <div class="container hub-layout"><article class="prose">{article_html}</article></div>
       <section class="related-section" aria-labelledby="{esc(slug)}-quotes-title"><div class="container"><p class="eyebrow">Read the records</p><h2 id="{esc(slug)}-quotes-title">Quotes in this collection</h2><div class="quote-grid">{cards}</div></div></section>
@@ -1100,11 +1128,12 @@ def generate(
                 quote_rows=author_quotes,
                 quote_slugs=slugs,
                 published_date="2026-07-23",
+                portrait_html=portrait(author, "avatar avatar-large", 112, f"Portrait of {author}", "eager"),
             ),
             encoding="utf-8",
         )
         author_cards.append(
-            f"""<a class="library-card" href="{author_slug}.html"><span>Philosopher</span><h2>{esc(author)}</h2><p>{esc(sentence_excerpt(profile["biography"], 150))}</p><small>{len(author_quotes)} published quotes →</small></a>"""
+            f"""<a class="library-card" href="{author_slug}.html">{portrait(author, size=44)}<span>Philosopher</span><h2>{esc(author)}</h2><p>{esc(sentence_excerpt(profile["biography"], 150))}</p><small>{len(author_quotes)} published quotes →</small></a>"""
         )
 
     (SITE / "philosophers" / "index.html").write_text(
@@ -1213,6 +1242,7 @@ def generate(
                 quote_rows=school_quotes,
                 quote_slugs=slugs,
                 published_date="2026-07-23",
+                figure_html=school_figure(school_name),
             ),
             encoding="utf-8",
         )

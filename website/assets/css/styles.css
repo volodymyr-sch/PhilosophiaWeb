@@ -1,18 +1,25 @@
-/* Philosophia — a philosopher reading at night, in black and white.
+/* Philosophia — a philosopher reading at night.
    Home: home.js draws him in grain above a sea of clouds, under a turning star map.
-   Other pages: the same night, still (a star map and fine grain, no script). Classical type, no webfonts. */
+   Reading pages: a calm blue-grey theme made for long reading (soft text on dark grey, sans-serif body,
+   serif for quotes and titles), with portraits and school scenes from the app. No webfonts. */
 
 :root {
-  --ink: #0a0a0b;
-  --paper: #f5f5f5;
-  --paper-dim: #d2d2d2;
-  --muted: #a8a8a8;
-  --line: rgba(255, 255, 255, 0.18);
-  --line-2: rgba(255, 255, 255, 0.36);
-  --glass: rgba(10, 10, 11, 0.58);
-  --max: 1180px;
+  --ink: oklch(14.68% 0.01 266); /* page background: dark blue-grey, softer than black */
+  --paper: oklch(94.23% 0.006 266); /* headings, names, bold text */
+  --paper-dim: oklch(77.16% 0.028 266); /* body text */
+  --muted: oklch(66.65% 0.04 266); /* labels and small notes */
+  --line: oklch(24.84% 0.018 266);
+  --line-2: oklch(35.33% 0.028 266);
+  --glass: oklch(14.68% 0.01 266 / 0.6);
+  --panel: oklch(16.75% 0.011 266); /* boxes and cards, a little lighter than the page */
+  --panel-hover: oklch(17.8% 0.012 266);
+  --bar: oklch(16.75% 0.011 266 / 0.9); /* the floating header and its lists */
+  --accent: oklch(70% 0.15 266); /* links */
+  --radius: 12px;
+  --column: 40rem; /* the text column of reading pages */
+  --wide: 58rem; /* card lists and the footer */
   --serif: ui-serif, "New York", "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
 }
 
@@ -54,28 +61,12 @@ body {
   min-width: 0;
   margin: 0;
   color: var(--paper);
-  font-family: var(--serif);
+  font-family: var(--sans);
   font-size: 18px;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
-}
-
-main {
-  text-shadow: 0 1px 22px rgba(0, 0, 0, 0.85);
-}
-
-/* The still night behind the reading pages: a faint star map and fine grain, like the home page. */
-body::before {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    url("../images/night-sky.svg") 50% 0 / cover no-repeat,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
-  pointer-events: none;
-  content: "";
 }
 
 img {
@@ -115,24 +106,36 @@ h1,
 h2,
 h3 {
   margin: 0;
-  font-family: var(--serif);
   font-weight: 400;
   line-height: 1.1;
   letter-spacing: -0.012em;
 }
 
-/* Page titles: a step above the quote text on quote pages (3rem), so long titles stay easy to read. */
+/* Serif for titles and quotes; sans-serif for section headings, like the body text. */
 h1 {
-  font-size: clamp(2.1rem, 4.4vw, 3.6rem);
+  font-family: var(--serif);
+}
+
+h2,
+h3 {
+  font-family: var(--sans);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+/* Page titles: calm and small, like the rest of the reading pages. The home page has its own size. */
+h1 {
+  font-size: clamp(1.9rem, 3.4vw, 2.5rem);
   letter-spacing: -0.022em;
 }
 
 h2 {
-  font-size: clamp(1.7rem, 3.4vw, 2.7rem);
+  font-size: 1.12rem;
+  line-height: 1.35;
 }
 
 h3 {
-  font-size: 1.4rem;
+  font-size: 1.05rem;
 }
 
 p {
@@ -142,25 +145,13 @@ p {
 .eyebrow {
   margin: 0 0 1.1rem;
   color: var(--muted);
-  font: 600 0.7rem/1.4 var(--sans);
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-}
-
-.eyebrow::before {
-  display: inline-block;
-  width: 26px;
-  height: 1px;
-  margin-right: 0.85rem;
-  background: currentColor;
-  content: "";
-  vertical-align: middle;
+  font: 500 0.82rem/1.4 var(--sans);
 }
 
 .lede {
   max-width: 40rem;
   color: var(--paper-dim);
-  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  font-size: 1.12rem;
   line-height: 1.6;
 }
 
@@ -194,12 +185,12 @@ p {
 }
 
 .container {
-  width: min(calc(100% - 48px), var(--max));
+  width: min(calc(100% - 40px), var(--wide));
   margin-inline: auto;
 }
 
 .narrow {
-  width: min(calc(100% - 48px), 800px);
+  width: min(calc(100% - 40px), var(--column));
   margin-inline: auto;
 }
 
@@ -214,9 +205,8 @@ p {
   transition: background-color 0.35s ease, border-color 0.35s ease;
 }
 
-.site-header.is-scrolled,
 .site-header.is-open {
-  background: rgba(10, 10, 11, 0.76);
+  background: rgba(0, 0, 0, 0.8);
   border-color: var(--line);
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
@@ -237,7 +227,7 @@ p {
 }
 
 .brand img {
-  border-radius: 10px;
+  border-radius: 50%;
 }
 
 .brand span {
@@ -345,6 +335,180 @@ p {
   display: none;
 }
 
+/* ---------- Header on reading pages: a small floating pill ----------
+   The links show at the top of the page. On screens narrower than 1180px, after the title scrolls away,
+   main.js shows the page name instead, and it opens the list of sections (main.js moves the .toc into the header).
+   Wider screens show the list of sections in a panel left of the text. */
+
+.content-page .site-header {
+  position: fixed;
+  top: 14px;
+  right: 0;
+  left: 0;
+  width: fit-content;
+  height: auto;
+  max-width: calc(100% - 24px);
+  margin-inline: auto;
+  padding: 5px;
+  background: var(--bar);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.content-page .nav-wrap {
+  width: auto;
+  gap: 0.25rem;
+}
+
+.content-page .brand {
+  gap: 0.6rem;
+  padding-right: 0.6rem;
+}
+
+.content-page .brand img {
+  width: 30px;
+  height: 30px;
+}
+
+.content-page .brand span {
+  font-size: 0.66rem;
+  letter-spacing: 0.3em;
+}
+
+.content-page .site-nav {
+  gap: 0.15rem;
+}
+
+.content-page .site-nav > a:not(.button) {
+  padding: 0.62rem 0.75rem;
+  font: 500 0.86rem/1 var(--sans);
+  letter-spacing: 0;
+  text-transform: none;
+  border-radius: 999px;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.content-page .site-nav > a:not(.button)::after {
+  display: none;
+}
+
+.content-page .site-nav > a:hover {
+  color: var(--paper);
+}
+
+.content-page .site-nav > a[aria-current="page"] {
+  color: var(--paper);
+  background: var(--line);
+}
+
+.content-page .nav-store-actions {
+  gap: 0.3rem;
+  margin-left: 0.3rem;
+}
+
+.content-page .nav-store-actions .button {
+  min-height: 32px;
+  padding: 0 0.85rem;
+  font-size: 0.8rem;
+}
+
+/* While reading: the page name. It opens the list of sections. */
+.page-pill {
+  display: none;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: 0.6rem 0.95rem;
+  color: var(--paper);
+  font: 600 0.86rem/1.2 var(--sans);
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.page-pill span {
+  max-width: 16rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.page-pill::after {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+  content: "";
+  rotate: 45deg;
+  translate: 0 -2px;
+  transition: rotate 0.3s ease, translate 0.3s ease;
+}
+
+.page-pill:hover {
+  background: var(--line);
+}
+
+.content-page .site-header.is-toc-open .page-pill::after {
+  rotate: 225deg;
+  translate: 0 2px;
+}
+
+@media (max-width: 1179.98px) {
+  .content-page .site-header.is-reading .page-pill {
+    display: inline-flex;
+  }
+
+  .content-page .site-header.is-reading .site-nav {
+    display: none;
+  }
+}
+
+.content-page .site-header > .toc {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  display: none;
+  width: min(22rem, calc(100vw - 24px));
+  padding: 0.45rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  translate: -50% 0;
+}
+
+.content-page .site-header.is-toc-open > .toc {
+  display: grid;
+}
+
+.toc strong {
+  padding: 0.55rem 0.75rem 0.35rem;
+  color: var(--muted);
+  font: 500 0.82rem/1.4 var(--sans);
+}
+
+.toc a {
+  padding: 0.55rem 0.75rem;
+  color: var(--paper-dim);
+  font: 500 0.86rem/1.35 var(--sans);
+  text-decoration: none;
+  border-radius: 10px;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.toc a:hover {
+  color: var(--paper);
+  background: var(--line);
+}
+
+.toc a.is-active {
+  color: var(--paper);
+  background: var(--line);
+}
+
 /* ---------- Buttons ---------- */
 
 .button {
@@ -355,11 +519,9 @@ p {
   min-height: 50px;
   padding: 0 1.55rem;
   color: var(--ink);
-  font: 700 0.72rem/1 var(--sans);
-  letter-spacing: 0.2em;
+  font: 600 0.84rem/1 var(--sans);
   text-decoration: none;
   text-shadow: none;
-  text-transform: uppercase;
   background: var(--paper);
   border: 1px solid var(--paper);
   border-radius: 999px;
@@ -377,9 +539,10 @@ p {
 }
 
 .button-small {
+  gap: 0.45rem;
   min-height: 38px;
   padding: 0 1rem;
-  font-size: 0.64rem;
+  font-size: 0.8rem;
   color: var(--paper);
   background: transparent;
   border-color: var(--line-2);
@@ -428,27 +591,47 @@ p {
   letter-spacing: 0.01em;
 }
 
+/* Store buttons show the store's mark (the same marks as the home badges, which have their own SVG). */
+a.button:not(.store-button)[href*="apps.apple.com"] {
+  --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M17.1 12.5c0-2.6 2.1-3.8 2.2-3.9a4.7 4.7 0 0 0-3.7-2c-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.3-.9A4.9 4.9 0 0 0 4.2 9c-1.8 3.1-.5 7.8 1.3 10.3.9 1.2 1.9 2.5 3.2 2.4 1.3-.1 1.8-.8 3.4-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5a11.2 11.2 0 0 0 1.4-2.9 4.5 4.5 0 0 1-2.9-3.8ZM14.6 5a4.5 4.5 0 0 0 1.1-3.2 4.6 4.6 0 0 0-3 1.6 4.3 4.3 0 0 0-1.1 3.1A3.8 3.8 0 0 0 14.6 5Z'/%3E%3C/svg%3E");
+}
+
+a.button:not(.store-button)[href*="play.google.com"] {
+  --mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3.7 2.8a1.9 1.9 0 0 0-.5 1.4v15.6c0 .6.2 1.1.6 1.5l9.2-9.2L3.7 2.8Zm10.6 8 2.8-2.8-10-5.7 7.2 8.5Zm0 2.6-7.1 8.4 9.9-5.7-2.8-2.7Zm1.3-1.3 3 2.9c.8-.5 1.2-1 1.2-1.5s-.4-1-1.2-1.5l-3-1.7-1.3 1.8 1.3 0Z'/%3E%3C/svg%3E");
+}
+
+a.button:not(.store-button)[href*="apps.apple.com"]::before,
+a.button:not(.store-button)[href*="play.google.com"]::before {
+  flex: none;
+  width: 1.45em;
+  height: 1.45em;
+  margin-top: -0.15em;
+  background: currentColor;
+  content: "";
+  -webkit-mask: var(--mark) center / contain no-repeat;
+  mask: var(--mark) center / contain no-repeat;
+}
+
 .text-link {
-  color: var(--paper);
-  text-decoration-color: var(--line-2);
-  transition: text-decoration-color 0.3s ease;
+  color: var(--accent);
+  text-decoration: none;
 }
 
 .text-link:hover {
-  text-decoration-color: var(--paper);
+  text-decoration: underline;
 }
 
-/* ---------- Breadcrumbs, chips, meta ---------- */
+/* ---------- Reading pages: one calm column ----------
+   Quote, guide, hub, list and FAQ pages put their text in one narrow column (--column), with
+   small, quiet headings and soft panels for boxes and cards. Card lists use a wider column (--wide). */
 
 .breadcrumbs {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 2.4rem;
+  gap: 0.45rem;
+  margin-bottom: 1.6rem;
   color: var(--muted);
-  font: 600 0.66rem/1.4 var(--sans);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font: 500 0.82rem/1.4 var(--sans);
 }
 
 .breadcrumbs a {
@@ -467,230 +650,266 @@ p {
 .guide-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 2rem;
+  gap: 0.45rem;
+  margin-top: 1.4rem;
 }
 
 .detail-chip,
 .guide-meta span {
-  padding: 0.5rem 0.95rem;
+  padding: 0.35rem 0.7rem;
   color: var(--paper-dim);
-  font: 600 0.64rem/1 var(--sans);
-  letter-spacing: 0.16em;
+  font: 500 0.78rem/1.2 var(--sans);
   text-decoration: none;
-  text-transform: uppercase;
   border: 1px solid var(--line);
   border-radius: 999px;
   transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+  background: var(--panel);
 }
 
 a.detail-chip:hover {
-  color: var(--ink);
-  background: var(--paper);
-  border-color: var(--paper);
+  color: var(--paper);
+  background: var(--panel-hover);
+  border-color: var(--line-2);
 }
 
-/* ---------- Heroes ---------- */
-
+/* The top of a page: room for the floating header, then the title. */
 .quote-hero,
 .guide-hero {
-  padding: clamp(3.2rem, 8vw, 7rem) 0 clamp(2.6rem, 6vw, 5rem);
+  padding: clamp(7rem, 14vw, 9.5rem) 0 2.4rem;
 }
 
+.guide-hero .container {
+  width: min(calc(100% - 40px), var(--column));
+}
+
+/* List pages: the title starts at the same edge as the card grid under it. */
+.library-page .guide-hero .container {
+  width: min(calc(100% - 40px), var(--wide));
+}
+
+.guide-hero .lede {
+  margin: 1rem 0 0;
+}
+
+/* On quote pages the quote is the title. */
 .quote-hero blockquote {
-  max-width: 28ch;
-  margin: 0 0 2rem;
-  font-size: clamp(1.75rem, 3.6vw, 3rem);
-  line-height: 1.2;
-  letter-spacing: -0.015em;
-}
-
-.quote-hero .narrow {
-  width: min(calc(100% - 48px), var(--max));
+  margin: 0 0 1.3rem;
+  color: var(--paper);
+  font-size: clamp(1.55rem, 2.6vw, 2rem);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-family: var(--serif);
+  font-style: italic;
 }
 
 .quote-attribution {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.4rem 1rem;
+  align-items: center;
+  gap: 0.3rem 0.9rem;
   margin: 0;
 }
 
 .quote-attribution a {
-  font: 700 0.76rem/1 var(--sans);
-  letter-spacing: 0.22em;
+  font: 600 0.86rem/1.2 var(--sans);
   text-decoration: none;
-  text-transform: uppercase;
 }
 
 .quote-attribution span {
-  color: var(--paper-dim);
+  color: var(--muted);
+  font-size: 0.95rem;
   font-style: italic;
 }
 
 .quote-attribution span::before {
   display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-right: 1rem;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.9rem;
   border: 1px solid var(--line-2);
   content: "";
   transform: rotate(45deg) translateY(-1px);
 }
 
-.guide-hero h1 {
-  max-width: 17ch;
-}
-
-.guide-hero .lede {
-  margin: 1.6rem 0 0;
-}
-
-.guide-hero .narrow h1 {
-  max-width: none;
-}
-
-.hub-intro {
-  margin-bottom: 2.4rem;
-}
-
-/* ---------- Sections and layout ---------- */
-
 .section {
-  padding: clamp(3rem, 7vw, 6rem) 0;
+  padding: 2.4rem 0;
 }
 
 .section-tight {
-  padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(4rem, 8vw, 7rem);
+  padding: 1.2rem 0 4rem;
 }
 
+.related-section {
+  padding: 2.4rem 0;
+}
+
+/* The text column. Sections of long pages use it, and so do the related lists and the app box. */
 .quote-layout,
-.guide-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 250px;
-  gap: clamp(2rem, 6vw, 6rem);
-  align-items: start;
+.guide-layout,
+.hub-layout,
+.related-section .container,
+.section-tight .container {
+  width: min(calc(100% - 40px), var(--column));
 }
 
+/* The list of sections: on wide screens, a panel left of the text that stays in view while you read.
+   On smaller screens main.js moves it into the header pill. */
 .quote-aside,
 .guide-sidebar {
-  position: sticky;
-  top: 108px;
+  display: none;
 }
 
-.toc {
-  display: grid;
-  gap: 0.2rem;
-  padding-left: 1.2rem;
-  border-left: 1px solid var(--line);
+@media (min-width: 1180px) {
+  .quote-layout,
+  .guide-layout {
+    position: relative;
+  }
+
+  .quote-aside,
+  .guide-sidebar {
+    position: absolute;
+    top: 0;
+    right: calc(100% + 3rem);
+    bottom: 0;
+    display: block;
+    width: 12rem;
+  }
+
+  .quote-aside .toc,
+  .guide-sidebar .toc {
+    position: sticky;
+    top: 7rem;
+    display: grid;
+    justify-items: start;
+  }
+
+  .quote-aside .toc strong,
+  .guide-sidebar .toc strong {
+    padding: 0 0 0.6rem;
+  }
+
+  .quote-aside .toc a,
+  .guide-sidebar .toc a {
+    padding: 0.4rem 0;
+    color: var(--muted);
+    transform-origin: left center;
+    transition: color 0.3s ease, transform 0.4s var(--ease);
+  }
+
+  .quote-aside .toc a:hover,
+  .guide-sidebar .toc a:hover {
+    color: var(--paper-dim);
+    background: none;
+  }
+
+  /* The section you are reading: brighter and a little larger. */
+  .quote-aside .toc a.is-active,
+  .guide-sidebar .toc a.is-active {
+    color: var(--paper);
+    background: none;
+    transform: scale(1.12);
+  }
 }
 
-.toc strong {
-  margin-bottom: 0.7rem;
-  color: var(--muted);
-  font: 600 0.66rem/1.4 var(--sans);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
+.hub-intro {
+  margin-bottom: 1.4rem;
 }
 
-.toc a {
-  position: relative;
-  padding: 0.3rem 0;
-  color: var(--muted);
-  font: 500 0.86rem/1.35 var(--sans);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.toc a:hover,
-.toc a.is-active {
-  color: var(--paper);
-}
-
-.toc a.is-active::before {
-  position: absolute;
-  top: 50%;
-  left: calc(-1.2rem - 1px);
-  width: 1px;
-  height: 1.3em;
-  background: var(--paper);
-  content: "";
-  transform: translateY(-50%);
-}
-
-/* ---------- Prose ---------- */
+/* ---------- Text ---------- */
 
 .prose {
-  max-width: 68ch;
-  font-size: 1.12rem;
-  line-height: 1.78;
-}
-
-/* On quote pages this h1 heads the reading under the quote: section size, so the quote stays the main text. */
-.prose > section:first-child > h1,
-.prose > h1 {
-  margin-bottom: 1.6rem;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-}
-
-.prose h2 {
-  position: relative;
-  margin: 3.6rem 0 1.4rem;
-  padding-top: 2.2rem;
-  font-size: clamp(1.6rem, 3vw, 2.2rem);
-}
-
-.prose h2::before {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 56px;
-  height: 1px;
-  background: var(--line-2);
-  content: "";
-}
-
-.prose h2::after {
-  position: absolute;
-  top: -4px;
-  left: 64px;
-  width: 8px;
-  height: 8px;
-  border: 1px solid var(--line-2);
-  content: "";
-  transform: rotate(45deg);
-}
-
-.prose h3 {
-  margin: 2.2rem 0 0.8rem;
-  font-style: italic;
-}
-
-.prose ol,
-.prose ul {
-  padding-left: 1.3rem;
-}
-
-.prose li {
-  margin-bottom: 0.7em;
-  padding-left: 0.3rem;
-}
-
-.prose li::marker {
-  color: var(--muted);
+  color: var(--paper-dim);
+  font-size: 1rem;
+  line-height: 1.75;
+  letter-spacing: 0.15px;
 }
 
 .prose strong {
-  font-weight: 700;
+  color: var(--paper);
+  font-weight: 600;
 }
 
 .prose a:not(.text-link):not(.button) {
-  text-decoration-color: var(--line-2);
+  color: var(--accent);
+  text-decoration: none;
 }
 
 .prose a:not(.text-link):not(.button):hover {
-  text-decoration-color: var(--paper);
+  text-decoration: underline;
+}
+
+/* Section headings: small, with a thin line after them. On quote pages the h1 heads the first section. */
+.prose h2,
+.prose > section:first-child > h1,
+.prose > h1,
+.related-section .container > h2,
+.faq-page-section h2,
+.hub-intro h2 {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 3rem 0 1rem;
+  color: var(--paper);
+  font: 600 1.12rem/1.35 var(--sans);
+  letter-spacing: -0.005em;
+}
+
+.prose h2::after,
+.prose > section:first-child > h1::after,
+.prose > h1::after,
+.related-section .container > h2::after,
+.faq-page-section h2::after,
+.hub-intro h2::after {
+  flex: 1 0 2rem;
+  height: 1px;
+  background: var(--line);
+  content: "";
+}
+
+.prose > section:first-child > h1,
+.prose > h1,
+.related-section .container > h2,
+.faq-page-section h2,
+.hub-intro h2 {
+  margin-top: 0;
+}
+
+.prose h3 {
+  margin: 2rem 0 0.6rem;
+  color: var(--paper);
+  font-size: 1.02rem;
+}
+
+/* Lists: arrows for points, small numbers for steps. */
+.prose ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.prose ul > li {
+  position: relative;
+  padding-left: 1.7rem;
+}
+
+.prose ul > li::before {
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+  font-family: var(--sans);
+  content: "→";
+}
+
+.prose ol {
+  padding-left: 1.6rem;
+}
+
+.prose ol > li::marker {
+  color: var(--muted);
+  font: 600 0.85em var(--sans);
+}
+
+.prose li {
+  margin-bottom: 0.6em;
 }
 
 code {
@@ -702,46 +921,56 @@ code {
   word-break: break-all;
 }
 
-.answer-box {
-  margin-bottom: 2.6rem;
-  padding: 1.6rem 0;
-  font-size: 1.28rem;
-  line-height: 1.55;
-  border-block: 1px solid var(--line-2);
+/* ---------- Panels: one soft box for answers, notes, sources, cards and the app box ---------- */
+
+.answer-box,
+.guide-callout,
+.source-lens,
+.cta-band,
+.quote-card,
+.library-card,
+.guide-card,
+.related-card {
+  display: block;
+  padding: 1.15rem 1.35rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
 }
 
-.answer-box p {
+.answer-box {
+  margin-bottom: 2.4rem;
+  color: var(--paper-dim);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+
+.answer-box p,
+.guide-callout p {
   margin: 0;
 }
 
 .guide-callout {
-  margin: 1.6rem 0;
-  padding: 0.2rem 0 0.2rem 1.5rem;
-  border-left: 2px solid var(--paper);
-}
-
-.guide-callout p {
-  margin: 0;
-  font-size: 1.15rem;
+  margin: 1.4rem 0;
 }
 
 .pullquote {
-  margin: 2.8rem 0;
-  padding: 0 0 0 1.8rem;
-  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  margin: 2.4rem 0;
+  padding-left: 1.4rem;
+  color: var(--paper);
+  font-size: 1.3rem;
   font-style: italic;
-  line-height: 1.3;
+  line-height: 1.45;
   border-left: 1px solid var(--line-2);
+  font-family: var(--serif);
 }
 
 .pullquote cite {
   display: block;
-  margin-top: 1rem;
+  margin-top: 0.8rem;
   color: var(--muted);
-  font: 600 0.7rem/1.5 var(--sans);
+  font: 500 0.82rem/1.5 var(--sans);
   font-style: normal;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
 }
 
 .pullquote cite cite {
@@ -750,82 +979,59 @@ code {
 }
 
 .source-lens {
-  margin: 3rem 0;
-  padding: 1.8rem;
-  background: var(--glass);
-  border: 1px solid var(--line);
-  border-radius: 22px;
+  margin: 2.6rem 0;
 }
 
 .source-lens h2 {
-  margin: 0 0 1.2rem;
-  padding: 0;
-  font-size: 1.5rem;
+  margin: 0 0 0.8rem;
+  font-size: 1.15rem;
 }
 
-.source-lens h2::before,
 .source-lens h2::after {
   display: none;
 }
 
 .source-lens dl {
-  display: grid;
-  gap: 0;
   margin: 0;
 }
 
 .source-lens dl > div {
   display: grid;
-  grid-template-columns: 9rem minmax(0, 1fr);
+  grid-template-columns: 8.5rem minmax(0, 1fr);
   gap: 1rem;
-  padding: 0.8rem 0;
+  padding: 0.7rem 0;
   border-top: 1px solid var(--line);
 }
 
 .source-lens dt {
   color: var(--muted);
-  font: 600 0.66rem/1.9 var(--sans);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font: 500 0.82rem/1.6 var(--sans);
 }
 
 .source-lens dd {
   margin: 0;
-  font-size: 1rem;
+  color: var(--paper);
+  font-size: 0.98rem;
   line-height: 1.55;
 }
 
 .source-caution {
-  margin: 1.2rem 0 0;
-  color: var(--paper-dim);
-  font-size: 0.95rem;
+  margin: 0.9rem 0 0;
+  font-size: 0.92rem;
   line-height: 1.6;
 }
 
 .sources {
-  margin-top: 3.6rem;
-  padding-top: 1.6rem;
-  border-top: 1px solid var(--line);
-}
-
-.sources h2 {
-  padding: 0;
-  margin-top: 0;
-  font-size: 1.25rem;
-}
-
-.sources h2::before,
-.sources h2::after {
-  display: none;
+  margin-top: 3rem;
 }
 
 .sources ul {
-  color: var(--paper-dim);
-  font-size: 0.98rem;
+  font-size: 0.95rem;
 }
 
 .guide-figure {
-  margin: 2.6rem 0;
+  margin: 2.4rem 0;
+  text-align: center;
 }
 
 .gallery-visual {
@@ -837,124 +1043,125 @@ code {
 }
 
 .gallery-visual img {
-  max-width: 300px;
+  max-width: 280px;
   border-radius: 29px;
 }
 
-/* ---------- Cards and lists ---------- */
+/* ---------- Card lists ---------- */
 
 .quote-grid,
-.related-grid,
-.library-grid,
-.hub-grid,
+.related-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: 0.75rem;
+}
+
+/* Guides: three in a row, and each featured guide takes a full row (the list goes 1 featured, 3, 1 featured, 3). */
 .guides-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
-  gap: 0 clamp(1.8rem, 4vw, 3.5rem);
+  gap: 0.75rem;
+}
+
+@media (min-width: 860px) {
+  .guides-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Cards in one row have the same height; the link stays at the bottom. */
+.guide-card {
+  display: flex;
+  flex-direction: column;
 }
 
 .quote-card,
 .library-card,
 .guide-card,
 .related-card {
-  position: relative;
-  display: block;
-  padding: 1.7rem 0 2rem;
   text-decoration: none;
-  border-top: 1px solid var(--line);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.quote-card::before,
-.library-card::before,
-.guide-card::before,
-.related-card::before {
-  position: absolute;
-  top: -1px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: var(--paper);
-  content: "";
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.7s var(--ease);
-}
-
-.quote-card:hover::before,
-.library-card:hover::before,
-.guide-card:hover::before,
-.related-card:hover::before {
-  transform: scaleX(1);
+.quote-card:hover,
+.library-card:hover,
+.guide-card:hover,
+.related-card:hover {
+  border-color: var(--line-2);
+  background: var(--panel-hover);
 }
 
 .quote-card blockquote {
-  margin: 0 0 1.1rem;
-  font-size: 1.28rem;
-  line-height: 1.42;
-  transition: color 0.3s ease;
+  margin: 0 0 0.8rem;
+  color: var(--paper);
+  font-size: 1.08rem;
+  line-height: 1.5;
+  font-family: var(--serif);
 }
 
 .quote-card span {
   display: block;
-  font: 700 0.68rem/1 var(--sans);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  font: 600 0.86rem/1.2 var(--sans);
+  color: var(--paper);
 }
 
 .quote-card small {
   display: block;
-  margin-top: 0.55rem;
+  margin-top: 0.45rem;
   color: var(--muted);
-  font: italic 0.92rem/1.4 var(--serif);
+  font: italic 0.88rem/1.4 var(--serif);
 }
 
 .library-card > span,
 .guide-topic,
 .related-card small {
   display: block;
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.55rem;
   color: var(--muted);
-  font: 600 0.66rem/1.4 var(--sans);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
+  font: 500 0.82rem/1.4 var(--sans);
 }
 
 .library-card h2,
 .guide-card h2,
 .related-card h2 {
-  margin-bottom: 0.7rem;
-  font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+  margin-bottom: 0.45rem;
+  font-size: 1.15rem;
+  line-height: 1.3;
 }
 
-.library-card p {
+.library-card p,
+.guide-card p {
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
   color: var(--paper-dim);
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.6;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
 
 .guide-link {
   display: inline-block;
-  margin-top: 0.6rem;
-  color: var(--paper-dim);
-  font: 600 0.66rem/1 var(--sans);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  margin-top: auto;
+  padding-top: 0.9rem;
+  color: var(--accent);
+  font: 500 0.85rem/1.2 var(--sans);
 }
 
 .guide-link::after {
   display: inline-block;
-  margin-left: 0.7rem;
+  margin-left: 0.6rem;
   content: "→";
   transition: transform 0.4s var(--ease);
 }
 
 .guide-card:hover .guide-link::after {
-  transform: translateX(6px);
+  transform: translateX(5px);
 }
 
 .guide-card.featured {
@@ -962,16 +1169,86 @@ code {
 }
 
 .guide-card.featured h2 {
-  max-width: 20ch;
-  font-size: clamp(1.7rem, 3.4vw, 2.7rem); /* the normal h2 size: above the other cards, below the page title */
+  font-size: 1.35rem;
 }
 
-.related-section {
-  padding: clamp(3rem, 7vw, 6rem) 0;
+/* The guide's scene on top of its card, edge to edge. */
+.guide-card-image {
+  width: calc(100% + 2.7rem);
+  max-width: none;
+  margin: -1.15rem -1.35rem 1rem;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--line);
+  border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
+  filter: grayscale(1) brightness(0.92);
 }
 
-.related-section h2 {
-  margin-bottom: 2rem;
+@media (min-width: 860px) {
+  .guide-card.featured .guide-card-image {
+    aspect-ratio: 3.2;
+  }
+}
+
+/* ---------- Images from the app ----------
+   Portraits of the philosophers (round, in grey, so paintings and engravings look like one set)
+   and black-and-white scenes for the schools and guides. */
+
+.avatar {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  object-position: 50% 18%;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  filter: grayscale(1);
+}
+
+.avatar-large {
+  width: 112px;
+  height: 112px;
+  margin-bottom: 1.4rem;
+}
+
+.library-card .avatar {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 0.8rem;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.card-meta .avatar {
+  width: 34px;
+  height: 34px;
+}
+
+.card-meta small {
+  margin-top: 0.2rem;
+}
+
+/* A school scene, a little wider than the text column. */
+.scene-figure {
+  position: relative;
+  left: 50%;
+  width: min(calc(100vw - 40px), 52rem);
+  margin: 2.2rem 0 0;
+  translate: -50% 0;
+}
+
+.scene-figure img {
+  width: 100%;
+  aspect-ratio: 2.5;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  filter: grayscale(1) brightness(0.92);
 }
 
 /* ---------- FAQ ---------- */
@@ -986,9 +1263,10 @@ code {
 
 .faq-item summary {
   position: relative;
-  padding: 1.5rem 3rem 1.5rem 0;
-  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
-  line-height: 1.3;
+  padding: 1.1rem 2.6rem 1.1rem 0;
+  color: var(--paper);
+  font-size: 1.1rem;
+  line-height: 1.4;
   list-style: none;
   cursor: pointer;
 }
@@ -1002,7 +1280,7 @@ code {
   position: absolute;
   top: 50%;
   right: 4px;
-  width: 16px;
+  width: 14px;
   height: 1px;
   background: var(--paper);
   content: "";
@@ -1018,7 +1296,7 @@ code {
 }
 
 .faq-answer {
-  padding: 0 3rem 1.8rem 0;
+  padding: 0 2.6rem 1.3rem 0;
   color: var(--paper-dim);
 }
 
@@ -1026,22 +1304,17 @@ code {
   margin-bottom: 0.8rem;
 }
 
-/* ---------- CTA band ---------- */
+/* ---------- The app box at the end of a page ---------- */
 
 .cta-band {
-  padding: clamp(2rem, 6vw, 4.5rem);
-  background: radial-gradient(40rem 20rem at 0 0, rgba(255, 255, 255, 0.07), transparent 70%), var(--glass);
-  border: 1px solid var(--line-2);
-  border-radius: 28px;
+  padding: 1.5rem 1.6rem;
 }
 
 .cta-band h2 {
-  max-width: 18ch;
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
 }
 
 .cta-band p:not(.eyebrow) {
-  max-width: 34rem;
   color: var(--paper-dim);
 }
 
@@ -1049,8 +1322,14 @@ code {
 .mobile-store-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
-  margin-top: 2rem;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+}
+
+.cta-store-actions .button {
+  min-height: 42px;
+  padding: 0 1.2rem;
+  font-size: 0.84rem;
 }
 
 .mobile-download {
@@ -1060,40 +1339,38 @@ code {
 /* ---------- Footer ---------- */
 
 .site-footer {
-  margin-top: 2rem;
-  padding: clamp(3rem, 6vw, 5rem) 0 2rem;
+  margin-top: 1rem;
+  padding: 2.6rem 0 2rem;
   border-top: 1px solid var(--line);
-  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.6));
 }
 
 .footer-grid {
   display: grid;
   grid-template-columns: 1.6fr repeat(3, 1fr);
-  gap: 2.5rem;
+  gap: 2rem;
 }
 
 .footer-brand p {
-  max-width: 18rem;
-  margin: 1.2rem 0 0;
+  max-width: 16rem;
+  margin: 1rem 0 0;
   color: var(--muted);
+  font-size: 0.92rem;
   font-style: italic;
   line-height: 1.5;
 }
 
 .footer-col h2 {
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   color: var(--muted);
-  font: 600 0.66rem/1.4 var(--sans);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
+  font: 500 0.82rem/1.4 var(--sans);
 }
 
 .footer-col a {
   display: block;
   width: fit-content;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.45rem;
   color: var(--paper-dim);
-  font-size: 0.98rem;
+  font-size: 0.9rem;
   text-decoration: none;
 }
 
@@ -1107,10 +1384,10 @@ code {
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 0.6rem 2rem;
-  margin-top: 3rem;
-  padding-top: 1.4rem;
+  margin-top: 2.2rem;
+  padding-top: 1.2rem;
   color: var(--muted);
-  font: 0.78rem/1.5 var(--sans);
+  font: 0.74rem/1.5 var(--sans);
   border-top: 1px solid var(--line);
 }
 
@@ -1130,7 +1407,7 @@ code {
   padding: clamp(1.1rem, 2.5vw, 1.5rem);
   color: var(--paper);
   text-shadow: none;
-  background: rgba(10, 10, 11, 0.96);
+  background: var(--bar);
   border: 1px solid var(--line-2);
   border-radius: 22px;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
@@ -1184,8 +1461,9 @@ code {
 .footer-col .analytics-preferences {
   display: block;
   width: fit-content;
-  margin-bottom: 0.55rem;
-  font-size: 0.98rem;
+  margin-bottom: 0.45rem;
+  color: var(--paper-dim);
+  font-size: 0.9rem;
 }
 
 .site-nav > .analytics-preferences.mobile-nav-link {
@@ -1207,11 +1485,6 @@ html:has(.landing-page) {
   --gutter: max(6vw, 24px);
   height: 100svh;
   overflow: hidden;
-}
-
-/* The home has its own night, so the still sky of the reading pages is not needed. */
-.landing-page::before {
-  display: none;
 }
 
 .landing-page .site-header {
@@ -1305,14 +1578,13 @@ html:has(.landing-page) {
 .stage .eyebrow {
   margin: 0 0 1.1rem;
   color: rgba(255, 255, 255, 0.82);
-}
-
-.stage .eyebrow::before {
-  display: none;
+  font: 600 0.7rem/1.4 var(--sans);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
 }
 
 .stage h1 {
-  color: #fff;
+  color: var(--paper);
   font-size: clamp(2.4rem, min(4.3vw, 8.4svh), 4.9rem);
   line-height: 1.04;
   letter-spacing: -0.03em;
@@ -1524,51 +1796,9 @@ html:has(.landing-page) {
   }
 }
 
-/* Reveal on scroll (main.js adds .reveal only to elements below the fold) */
-.reveal {
-  opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 1s ease, transform 1s var(--ease);
-  transition-delay: var(--d, 0ms);
-}
-
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
-
 /* ---------- Responsive ---------- */
 
 @media (max-width: 980px) {
-  .quote-layout,
-  .guide-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .quote-aside,
-  .guide-sidebar {
-    position: static;
-    order: -1;
-  }
-
-  .toc {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 1.4rem;
-    padding: 0 0 1.4rem;
-    border-bottom: 1px solid var(--line);
-    border-left: 0;
-  }
-
-  .toc strong {
-    flex: 0 0 100%;
-    margin-bottom: 0.3rem;
-  }
-
-  .toc a.is-active::before {
-    display: none;
-  }
-
   .footer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1576,18 +1806,17 @@ html:has(.landing-page) {
   .footer-brand {
     grid-column: 1 / -1;
   }
+
+  /* No room in the pill for the store buttons. The app box and the phone menu have them. */
+  .content-page .nav-store-actions {
+    display: none;
+  }
 }
 
 @media (max-width: 760px) {
   body {
     padding-bottom: 72px;
     font-size: 17px;
-  }
-
-  .container,
-  .narrow,
-  .quote-hero .narrow {
-    width: min(calc(100% - 36px), var(--max));
   }
 
   .site-header {
@@ -1608,7 +1837,7 @@ html:has(.landing-page) {
     align-items: stretch;
     gap: 0;
     padding: 0.6rem 18px 1.6rem;
-    background: rgba(10, 10, 11, 0.97);
+    background: rgba(0, 0, 0, 0.97);
     border-bottom: 1px solid var(--line);
   }
 
@@ -1648,6 +1877,76 @@ html:has(.landing-page) {
     min-height: 46px;
   }
 
+  /* Reading pages: a smaller pill, and the menu opens as a panel under it. */
+  .content-page .site-header {
+    height: auto;
+  }
+
+  .content-page .nav-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .content-page .nav-toggle span,
+  .content-page .nav-toggle::before,
+  .content-page .nav-toggle::after {
+    left: 9px;
+  }
+
+  .content-page .nav-toggle::before {
+    top: 12px;
+  }
+
+  .content-page .nav-toggle span {
+    top: 17px;
+  }
+
+  .content-page .nav-toggle::after {
+    top: 22px;
+  }
+
+  .content-page .site-nav {
+    top: calc(100% + 8px);
+    right: auto;
+    left: 50%;
+    width: min(22rem, calc(100vw - 24px));
+    padding: 0.3rem 1rem 1rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    translate: -50% 0;
+  }
+
+  .content-page .site-nav .mobile-nav-link,
+  .content-page .site-nav > .analytics-preferences.mobile-nav-link {
+    font: 500 0.95rem/1 var(--sans);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .content-page .site-nav > a:not(.button) {
+    padding: 1rem 0;
+    font-size: 0.95rem;
+    border-radius: 0;
+  }
+
+  .content-page .site-nav > a:hover,
+  .content-page .site-nav > a[aria-current="page"] {
+    background: none;
+  }
+
+  .content-page .site-header.is-open .site-nav {
+    display: flex;
+  }
+
+  .content-page .nav-store-actions {
+    display: grid;
+  }
+
+  .content-page .site-header.is-reading .brand span {
+    display: none;
+  }
+
   .mobile-download {
     position: fixed;
     right: 0;
@@ -1659,8 +1958,8 @@ html:has(.landing-page) {
     justify-content: space-between;
     gap: 1rem;
     padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
-    background: rgba(10, 10, 11, 0.94);
-    border-top: 1px solid var(--line-2);
+    background: var(--bar);
+    border-top: 1px solid var(--line);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
   }
@@ -1671,12 +1970,19 @@ html:has(.landing-page) {
   }
 
   .mobile-store-actions {
+    flex: none;
+    flex-wrap: nowrap;
+    gap: 0.4rem;
     margin: 0;
+  }
+
+  .mobile-store-actions .button {
+    padding: 0 0.8rem;
   }
 
   .source-lens dl > div {
     grid-template-columns: minmax(0, 1fr);
-    gap: 0.2rem;
+    gap: 0.15rem;
   }
 
   .analytics-consent {
@@ -1693,7 +1999,6 @@ html:has(.landing-page) {
   .footer-grid {
     grid-template-columns: minmax(0, 1fr);
   }
-
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1704,11 +2009,6 @@ html:has(.landing-page) {
     animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
     transition-delay: 0ms !important;
-  }
-
-  .reveal {
-    opacity: 1;
-    transform: none;
   }
 }
 
